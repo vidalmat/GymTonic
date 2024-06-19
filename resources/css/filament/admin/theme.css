@@ -1,0 +1,19 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+@config 'tailwind.config.js';
+
+.fi-header-heading {
+    /*@apply invisible;*/
+}
+
+.fi-ta-header-heading {
+    /*@apply invisible;*/
+}
+
+.fi-ta-ctn {
+    @apply border-none;
+}
+
+.fi-ta-group-header {
+    @apply bg-slate-300;
+}
