@@ -16,6 +16,8 @@ use App\Filament\Resources\User\UserResource;
 use App\Filament\Pages\Auth\CustomEditProfile;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use BezhanSalleh\FilamentShield\Resources\RoleResource;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
@@ -69,6 +71,7 @@ class AdminPanelProvider extends PanelProvider
                     NavigationGroup::make('Administration')
                         ->items([
                             ...(UserResource::canViewAny() ? UserResource::getNavigationItems() : []),
+                            ...(RoleResource::canViewAny() ? RoleResource::getNavigationItems() : []),
                         ]),
 
                     // NavigationGroup::make(UserResource::canViewAny() || RoleResource::canViewAny() || PermissionResource::canViewAny() ? 'Administration' : '')
@@ -81,6 +84,9 @@ class AdminPanelProvider extends PanelProvider
                 ]);
             })
             ->profile(CustomEditProfile::class)
-            ->revealablePasswords();
+            ->revealablePasswords()
+            ->plugins([
+                FilamentShieldPlugin::make()
+            ]);
     }
 }

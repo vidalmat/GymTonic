@@ -17,6 +17,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Actions\BulkActionGroup;
@@ -36,6 +37,12 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-user-group';
 
     protected static ?string $modelLabel = 'Membres';
+
+    public static ?string $slug = 'membres';
+
+    protected static ?string $recordTitleAttribute = 'code';
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function form(Form $form): Form
     {
@@ -66,14 +73,14 @@ class UserResource extends Resource
                         ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
                         ->dehydrated(fn (?string $state): bool => filled($state))
                         ->required(fn (Page $livewire) => ($livewire instanceof CreateUser)),
-                    // Fieldset::make()
-                    //     ->schema([
-                    //         Select::make('roles')
-                    //             ->label(new HtmlString('<span class="text-gray-400">Rôle</span>'))
-                    //             ->multiple()
-                    //             ->relationship('roles', 'name')
-                    //             ->preload(),
-                    //     ])
+                    Fieldset::make()
+                        ->schema([
+                            Select::make('roles')
+                                ->label(new HtmlString('<span class="text-gray-400">Rôle</span>'))
+                                ->multiple()
+                                ->relationship('roles', 'name')
+                                ->preload(),
+                        ])
                 ]),
 
             ]);
@@ -95,15 +102,15 @@ class UserResource extends Resource
                     ->label(new HtmlString('<span class="text-gray-400">Email</span>'))
                     ->searchable()
                     ->size(TextColumnSize::Small),
-                // TextColumn::make('roles.name')
-                //     ->label(new HtmlString('<span class="text-gray-400">Rôle</span>'))
-                //     ->badge()
-                //     ->size(TextColumnSize::Small)
-                //     ->color(fn (string $state): string => match ($state) {
-                //         'Writer' => 'warning',
-                //         'Enseignant' => 'danger',
-                //         'Admin' => 'success',
-                // }),
+                TextColumn::make('roles.name')
+                    ->label(new HtmlString('<span class="text-gray-400">Rôle</span>'))
+                    ->badge()
+                    ->size(TextColumnSize::Small)
+                    ->color(fn (string $state): string => match ($state) {
+                        'Manager' => 'warning',
+                        'Membre' => 'danger',
+                        'Super Admin' => 'success',
+                }),
                 TextColumn::make('created_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de création</span>'))
                     ->date('d-m-Y')
