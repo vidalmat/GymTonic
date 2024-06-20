@@ -10,8 +10,12 @@ return [
             'label' => 'Adresse Email',
         ],
 
-        'name' => [
+        'lastname' => [
             'label' => 'Nom',
+        ],
+
+        'firstname' => [
+            'label' => 'Prénom',
         ],
 
         'password' => [
@@ -43,7 +47,7 @@ return [
     'actions' => [
 
         'cancel' => [
-            'label' => 'Retour',
+            'label' => 'retour',
         ],
 
     ],
