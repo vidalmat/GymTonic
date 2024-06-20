@@ -59,4 +59,14 @@ class User extends Authenticatable implements HasName,  FilamentUser
         // return $this->getAttributeValue('lastname');
         return "{$this->firstname} {$this->lastname}";
     }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->hasRole('Super Admin');
+    }
+
+    public function isManager(): bool
+    {
+        return $this->hasRole('Manager');
+    }
 }
