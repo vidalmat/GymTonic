@@ -16,13 +16,7 @@ class Document extends Model
     protected $table = 'documents';
     protected $connection = 'mysql';
 
-    protected $casts = [
-        'member_charter' => 'boolean',
-        'registration_form' => 'boolean',
-        'cover_letter' => 'boolean',
-        'partner_document' => 'boolean',
-        'medical_certificat' => 'boolean',
-    ];
+    protected $casts = [];
 
     protected $guarded = [];
 

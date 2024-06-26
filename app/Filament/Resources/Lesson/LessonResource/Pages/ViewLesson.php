@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\Member\MemberResource\Pages;
+namespace App\Filament\Resources\Lesson\LessonResource\Pages;
 
 use Filament\Actions\EditAction;
 use Filament\Support\Enums\MaxWidth;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Contracts\Support\Htmlable;
-use App\Filament\Resources\Member\MemberResource;
+use App\Filament\Resources\Lesson\LessonResource;
 
-class ViewMember extends ViewRecord
+class ViewLesson extends ViewRecord
 {
-    protected static string $resource = MemberResource::class;
+    protected static string $resource = LessonResource::class;
 
     protected static ?string $title = 'Général';
 
@@ -25,7 +25,7 @@ class ViewMember extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        return "Membre " . $this->getRecord()?->lastname . " " . $this->getRecord()?->firstname;
+        return "Cours " . $this->getRecord()?->type;
     }
 
     public function getMaxContentWidth(): MaxWidth

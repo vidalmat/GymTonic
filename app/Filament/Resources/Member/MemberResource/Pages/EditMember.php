@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\Member\MemberResource\Pages;
 
-use App\Filament\Resources\Member\MemberResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Support\Htmlable;
+use App\Filament\Resources\Member\MemberResource;
 
 class EditMember extends EditRecord
 {
@@ -19,10 +20,18 @@ class EditMember extends EditRecord
 
     protected function afterSave(): void
     {
-        // Vérifiez si 'documents' existe dans l'état du formulaire
         if ($this->form->getState()['documents'] ?? false) {
-            // Synchroniser les documents sélectionnés avec le membre
             $this->record->documents()->sync($this->form->getState()['documents']);
         }
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
+    public function getTitle(): string | Htmlable
+    {
+        return "Modifier " . $this->getRecord()?->lastname . " " . $this->getRecord()?->firstname;
     }
 }

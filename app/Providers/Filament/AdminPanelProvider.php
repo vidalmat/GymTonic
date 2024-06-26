@@ -14,11 +14,12 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Navigation\NavigationBuilder;
 use App\Filament\Resources\User\UserResource;
-use App\Filament\Resources\Document\DocumentResource;
-use App\Filament\Resources\Member\MemberResource;
 use App\Filament\Pages\Auth\CustomEditProfile;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use App\Filament\Resources\Lesson\LessonResource;
+use App\Filament\Resources\Member\MemberResource;
+use App\Filament\Resources\Document\DocumentResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
@@ -78,6 +79,7 @@ class AdminPanelProvider extends PanelProvider
                             ...(RoleResource::canViewAny() ? RoleResource::getNavigationItems() : []),
                             ...(DocumentResource::canViewAny() ? DocumentResource::getNavigationItems() : []),
                             ...(MemberResource::canViewAny() ? MemberResource::getNavigationItems() : []),
+                            ...(LessonResource::canViewAny() ? LessonResource::getNavigationItems() : []),
                         ]),
 
                     // NavigationGroup::make(UserResource::canViewAny() || RoleResource::canViewAny() || PermissionResource::canViewAny() ? 'Administration' : '')

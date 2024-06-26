@@ -6,34 +6,27 @@ use App\Models\Member;
 use App\Models\Document;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Arr;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Resources\Pages\Page;
 use Illuminate\Support\HtmlString;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Infolists\Components\Split;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Tables\Actions\DeleteAction;
-use Filament\Infolists\Components\IconEntry;
-use Filament\Infolists\Components\TextEntry;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
-use Filament\Infolists\Components\Fieldset as FieldsetMember;
 use App\Filament\Resources\Member\MemberResource\Pages\EditMember;
 use App\Filament\Resources\Member\MemberResource\Pages\ViewMember;
 use App\Filament\Resources\Member\MemberResource\Pages\ListMembers;
 use App\Filament\Resources\Member\MemberResource\Pages\CreateMember;
 use App\Filament\Resources\Member\MemberResource\Pages\MemberDocument;
-use App\Filament\Resources\Member\MemberResource\Pages\DocumentsRelationManager;
 
 class MemberResource extends Resource
 {
@@ -41,7 +34,7 @@ class MemberResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
-    protected static ?string $modelLabel = 'Membres';
+    protected static ?string $modelLabel = 'Adhérents';
 
     public static ?string $slug = 'membres';
 
@@ -76,16 +69,17 @@ class MemberResource extends Resource
                     ]),
                     Fieldset::make('Documents')
                         ->schema([
-                            Select::make('documents')
+                            CheckboxList::make('documents')
                                 ->label('Documents')
-                                ->multiple()
+                                // ->multiple()
                                 ->relationship('documents', 'label')
-                                ->preload()
+                                // ->preload()
                                 ->options(function () {
                                     return Document::all()->pluck('label', 'id');
-                                }),
+                                })
+                                ->gridDirection('row'),
                         ]),
-                    ]);
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -241,7 +235,7 @@ class MemberResource extends Resource
     {
         return $page->generateNavigationItems([
             ViewMember::class,
-            MemberDocument::class,
+            // MemberDocument::class,
         ]);
     }
 

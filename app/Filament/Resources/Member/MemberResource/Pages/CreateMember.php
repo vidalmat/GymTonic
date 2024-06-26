@@ -17,7 +17,6 @@ class CreateMember extends CreateRecord
 
     protected function afterSave(): void
     {
-        // Synchroniser les documents sélectionnés avec le membre
         $this->record->documents()->sync($this->form->getState()['documents']);
     }
 }
