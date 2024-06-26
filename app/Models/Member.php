@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Member extends Model
 {
@@ -16,9 +18,13 @@ class Member extends Model
 
     protected $guarded = [];
 
-    public function member(): BelongsTo
+    public function documents(): BelongsToMany
     {
-        return $this->belongsTo(Member::class);
+        return $this->belongsToMany(Document::class, 'member_document', 'member_id', 'document_id');
     }
 
+    public function hasDocument($documentType)
+    {
+        return $this->documents()->where('label', $documentType)->exists();
+    }
 }

@@ -14,4 +14,10 @@ class CreateMember extends CreateRecord
     {
         return $this->getResource()::getUrl('index');
     }
+
+    protected function afterSave(): void
+    {
+        // Synchroniser les documents sélectionnés avec le membre
+        $this->record->documents()->sync($this->form->getState()['documents']);
+    }
 }

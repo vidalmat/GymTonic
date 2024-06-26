@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Document extends Model
 {
@@ -24,8 +26,8 @@ class Document extends Model
 
     protected $guarded = [];
 
-    public function documents(): HasMany
+    public function members(): BelongsToMany
     {
-        return $this->hasMany(Document::class, 'member_id');
+        return $this->belongsToMany(Member::class, 'member_document', 'document_id', 'member_id');
     }
 }

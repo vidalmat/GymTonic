@@ -15,8 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('lastname');
             $table->string('firstname');
-            $table->string('email')->uniquqe();
-            $table->foreignUuid('document_id')->nullable()->constrained('documents');
+            $table->string('email')->unique();
             $table->timestamps();
         });
     }

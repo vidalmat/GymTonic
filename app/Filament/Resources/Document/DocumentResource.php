@@ -84,7 +84,7 @@ class DocumentResource extends Resource
                     })
                     ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
                     ->successNotificationTitle(function ($record) {
-                        return 'L\'utilisateur ' . $record->lastname . ' a été supprimé';
+                        return 'Le document ' . $record->label . ' a été supprimé';
                     }),
             ])
             ->bulkActions([

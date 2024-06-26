@@ -28,7 +28,6 @@ class MemberFactory extends Factory
             'lastname' => fake()->lastName(),
             'firstname' => fake()->firstName(),
             'email' => fake()->unique()->safeEmail(),
-            'document_id' => null,
         ];
     }
 

@@ -3,24 +3,37 @@
 namespace App\Filament\Resources\Member;
 
 use App\Models\Member;
+use App\Models\Document;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
-use App\Filament\Resources\Member\MemberResource\Pages\EditMember;
-use App\Filament\Resources\Member\MemberResource\Pages\ListMembers;
-use App\Filament\Resources\Member\MemberResource\Pages\CreateMember;
-use BezhanSalleh\FilamentShield\Support\Utils;
-use Filament\Forms\Components\Fieldset;
+use Illuminate\Support\Arr;
+use Filament\Infolists\Infolist;
+use Filament\Resources\Resource;
+use Filament\Resources\Pages\Page;
 use Illuminate\Support\HtmlString;
-use Filament\Forms\Components\TextInput;
-use Filament\Tables\Columns\TextColumn\TextColumnSize;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Infolists\Components\Split;
+use Filament\Pages\SubNavigationPosition;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
+use BezhanSalleh\FilamentShield\Support\Utils;
+use Filament\Tables\Columns\TextColumn\TextColumnSize;
+use Filament\Infolists\Components\Fieldset as FieldsetMember;
+use App\Filament\Resources\Member\MemberResource\Pages\EditMember;
+use App\Filament\Resources\Member\MemberResource\Pages\ViewMember;
+use App\Filament\Resources\Member\MemberResource\Pages\ListMembers;
+use App\Filament\Resources\Member\MemberResource\Pages\CreateMember;
+use App\Filament\Resources\Member\MemberResource\Pages\MemberDocument;
+use App\Filament\Resources\Member\MemberResource\Pages\DocumentsRelationManager;
 
 class MemberResource extends Resource
 {
@@ -32,7 +45,11 @@ class MemberResource extends Resource
 
     public static ?string $slug = 'membres';
 
+    protected static string $relationship = 'documents';
+
     protected static ?string $recordTitleAttribute = 'code';
+
+    protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     public static function form(Form $form): Form
     {
@@ -57,7 +74,18 @@ class MemberResource extends Resource
                         ->required()
                         ->maxLength(255),
                     ]),
-            ]);
+                    Fieldset::make('Documents')
+                        ->schema([
+                            Select::make('documents')
+                                ->label('Documents')
+                                ->multiple()
+                                ->relationship('documents', 'label')
+                                ->preload()
+                                ->options(function () {
+                                    return Document::all()->pluck('label', 'id');
+                                }),
+                        ]),
+                    ]);
     }
 
     public static function table(Table $table): Table
@@ -91,6 +119,14 @@ class MemberResource extends Resource
                             return 'info';
                         }
                     }),
+                IconColumn::make('documents.label')
+                    ->label(new HtmlString('<span class="text-gray-400">Documents</span>'))
+                    ->searchable()
+                    ->sortable()
+                    ->extraAttributes(['class' => 'flex justify-center'])
+                    ->boolean()
+                    ->trueColor('success')
+                    ->falseColor('danger'),
             ])
             ->filters([
                 //
@@ -114,19 +150,83 @@ class MemberResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
+    // public static function infolist(Infolist $infolist): Infolist
+    // {
+
+    //     return $infolist
+    //         ->schema([
+    //             Split::make([
+    //                 FieldsetMember::make('')
+    //                     ->columns(5)
+    //                     ->schema([
+    //                         TextEntry::make('lastname')
+    //                             ->label(new HtmlString('<span class="text-gray-400">Nom</span>')),
+    //                         TextEntry::make('firstname')
+    //                             ->label(new HtmlString('<span class="text-gray-400">Prénom</span>')),
+    //                         TextEntry::make('email')
+    //                             ->label(new HtmlString('<span class="text-gray-400">Email</span>')),
+    //                         // IconEntry::make('email')
+    //                         //     ->label(new HtmlString('<span class="text-gray-400">Documents</span>'))
+    //                         //     ->boolean()
+    //                         //         ->trueColor('success')
+    //                         //         ->falseColor('danger'),
+    //                     ]),
+    //             ]),
+    //             Split::make([
+    //                 FieldsetMember::make('Document(s)')
+    //                     ->columns(5)
+    //                     ->schema([
+    //                         IconEntry::make('documents.label')
+    //                             ->label('Charte de l\'adhérent')
+    //                             ->boolean(function ($record) {
+    //                     foreach ($record->documents as $document) {
+    //                         if ($document->label === 'Charte de l\'adhérent'
+    //                         ) {
+    //                             return true;
+    //                         }
+    //                     }
+    //                     return false;
+    //                             })
+    //                             // ->trueColor('success')
+    //                             ->falseColor('danger'),
+    //                         IconEntry::make('documents.label')
+    //                             ->label('Fiche d\'inscription')
+    //                             ->boolean(function ($record) {
+    //                                 return $record->documents->contains('label', "Charte de l'adhérent");
+    //                             })
+    //                             ->trueColor('success')
+    //                             ->falseColor('danger'),
+    //                         IconEntry::make('documents.cover_letter')
+    //                             ->label('Lettre d\'accompagnement')
+    //                             ->boolean(function ($record) {
+    //                                 return $record->documents->contains('label', 'Charte de l\'adhérent');
+    //                             })
+    //                             ->boolean(fn ($record) => $record->documents->contains('label', 'Lettre d\'accompagnement'))
+    //                             ->trueColor('success')
+    //                             ->falseColor('danger'),
+    //                         IconEntry::make('documents.partner_document')
+    //                             ->label('Documents partenaires')
+    //                             ->boolean(fn ($record) => $record->documents->contains('label', 'Documents partenaires'))
+    //                             ->trueColor('success')
+    //                             ->falseColor('danger'),
+    //                         IconEntry::make('documents.medical_certificat')
+    //                             ->label('Certificat médical')
+    //                             ->boolean(fn ($record) => $record->documents->contains('label', 'Certificat médical'))
+    //                             ->trueColor('success')
+    //                             ->falseColor('danger'),
+    //                     ]),
+    //                 ]),
+    //         ])->columns(1);
+    // }
 
     public static function getPages(): array
     {
         return [
             'index' => ListMembers::route('/'),
             'create' => CreateMember::route('/créer'),
+            'view' => ViewMember::route('/{record}'),
             'edit' => EditMember::route('/{record}/modifier'),
+            'document' => MemberDocument::route('/{record}/document'),
         ];
     }
 
@@ -135,5 +235,20 @@ class MemberResource extends Resource
         return Utils::isResourceNavigationBadgeEnabled()
             ? strval(static::getEloquentQuery()->count())
             : null;
+    }
+
+    public static function getRecordSubNavigation(Page $page): array
+    {
+        return $page->generateNavigationItems([
+            ViewMember::class,
+            MemberDocument::class,
+        ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            MemberDocument::class,
+        ];
     }
 }

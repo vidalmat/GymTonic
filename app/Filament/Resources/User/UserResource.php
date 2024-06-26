@@ -104,7 +104,7 @@ class UserResource extends Resource
                     ->size(TextColumnSize::Small)
                     ->color(fn (string $state): string => match ($state) {
                         'Manager' => 'warning',
-                        'Membre' => 'danger',
+                        'Professeur' => 'danger',
                         'Super Admin' => 'success',
                 }),
                 TextColumn::make('created_at')
@@ -127,7 +127,7 @@ class UserResource extends Resource
                 SelectFilter::make('roles.name')
                     ->label('Rôle')
                     ->options([
-                        '1' => 'Membre',
+                        '1' => 'Professeur',
                         '2' => 'Manager',
                         '3' => 'Super Admin',
                     ]),
@@ -141,7 +141,7 @@ class UserResource extends Resource
                     })
                     ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
                     ->successNotificationTitle(function ($record) {
-                        return 'L\'utilisateur ' . $record->lastname . ' a été supprimé';
+                        return 'L\'utilisateur ' . $record->lastname . $record->firstname . ' a été supprimé';
                     }),
             ])
             ->bulkActions([

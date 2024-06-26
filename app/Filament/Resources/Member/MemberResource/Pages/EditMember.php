@@ -16,4 +16,13 @@ class EditMember extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function afterSave(): void
+    {
+        // Vérifiez si 'documents' existe dans l'état du formulaire
+        if ($this->form->getState()['documents'] ?? false) {
+            // Synchroniser les documents sélectionnés avec le membre
+            $this->record->documents()->sync($this->form->getState()['documents']);
+        }
+    }
 }
