@@ -30,6 +30,8 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\User\UserResource\Widgets\UserOverview;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
+use App\Filament\Resources\Lesson\LessonResource\Widgets\CalendarWidget;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -97,7 +99,18 @@ class AdminPanelProvider extends PanelProvider
                 FilamentShieldPlugin::make()
             ])
             ->widgets([
-                UserOverview::class
+                CalendarWidget::class,
+                UserOverview::class,
+            ])
+            ->plugins([FilamentFullCalendarPlugin::make()
+                ->selectable(true)
+                ->editable(true)
+                ->editable(true)
+                ->config([
+                    'initialView' => 'timeGridWeek', // show week by week
+                    'firstDay' => 1, // start the week on a Monday
+                    'eventDisplay' => 'block', // render a solid rectangle
+                ])
             ]);
     }
 }

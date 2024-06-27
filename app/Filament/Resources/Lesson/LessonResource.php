@@ -7,22 +7,24 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Fieldset;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\SubNavigationPosition;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Tables\Actions\DeleteBulkAction;
+use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use App\Filament\Resources\Lesson\LessonResource\Pages\EditLesson;
 use App\Filament\Resources\Lesson\LessonResource\Pages\ViewLesson;
 use App\Filament\Resources\Lesson\LessonResource\Pages\ListLessons;
 use App\Filament\Resources\Lesson\LessonResource\Pages\CreateLesson;
-use BezhanSalleh\FilamentShield\Support\Utils;
-use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Actions\DeleteAction;
 
 class LessonResource extends Resource
 {
@@ -34,7 +36,7 @@ class LessonResource extends Resource
 
     public static ?string $slug = 'cours';
 
-    // protected static string $relationship = 'documents';
+    protected static string $relationship = 'users';
 
     protected static ?string $recordTitleAttribute = 'code';
 
@@ -51,13 +53,18 @@ class LessonResource extends Resource
                         ->label(new HtmlString('<span class="text-gray-400">Libellé</span>'))
                         ->maxLength(255),
 
-                    TextInput::make('type')
-                        ->label(new HtmlString('<span class="text-gray-400">Type</span>'))
-                        ->maxLength(255),
-
                     TextInput::make('duration')
                         ->label(new HtmlString('<span class="text-gray-400">Durée</span>'))
                         ->maxLength(255),
+
+                    // Fieldset::make()
+                    //     ->schema([
+                    //         Select::make('user_id')
+                    //             ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
+                    //             ->multiple()
+                    //             ->relationship('users', 'lastname')
+                    //             ->preload(),
+                    // ]),
 
                     DateTimePicker::make('start')
                         ->label(new HtmlString('<span class="text-gray-400">Début</span>')),
@@ -77,11 +84,13 @@ class LessonResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->size(TextColumnSize::Small),
-                TextColumn::make('type')
-                    ->label(new HtmlString('<span class="text-gray-400">Type</span>'))
-                    ->searchable()
-                    ->sortable()
-                    ->size(TextColumnSize::Small),
+
+                // TextColumn::make('users.firstname')
+                //     ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
+                //     ->searchable()
+                //     ->sortable()
+                //     ->size(TextColumnSize::Small),
+
                 TextColumn::make('duration')
                     ->label(new HtmlString('<span class="text-gray-400">Durée</span>'))
                     ->searchable()

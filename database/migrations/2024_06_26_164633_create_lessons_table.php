@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('lessons', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            // $table->foreignUuid('user_id')->nullable()->constrained('users');
             $table->string('label')->nullable();
-            $table->string('type')->nullable();
             $table->string('duration')->nullable();
             $table->dateTime('start')->nullable();
             $table->dateTime('end')->nullable();
