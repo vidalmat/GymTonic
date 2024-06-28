@@ -75,13 +75,19 @@ class AdminPanelProvider extends PanelProvider
                             ...Dashboard::getNavigationItems(),
                         ]),
 
-                    NavigationGroup::make((Auth::user()->isSuperAdmin() || Auth::user()->isManager()) ? 'Administration' : '')
+                    NavigationGroup::make(
+                        (
+                            UserResource::canViewAny() ||
+                            RoleResource::canViewAny() ||
+                            DocumentResource::canViewAny() ||
+                            MemberResource::canViewAny() ||
+                            LessonResource::canViewAny()) ? 'Administration' : '')
                         ->items([
-                            ...(UserResource::canViewAny() ? UserResource::getNavigationItems() : []),
-                            ...(RoleResource::canViewAny() ? RoleResource::getNavigationItems() : []),
-                            ...(DocumentResource::canViewAny() ? DocumentResource::getNavigationItems() : []),
-                            ...(MemberResource::canViewAny() ? MemberResource::getNavigationItems() : []),
-                            ...(LessonResource::canViewAny() ? LessonResource::getNavigationItems() : []),
+                            ...(UserResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? UserResource::getNavigationItems() : []),
+                            ...(RoleResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? RoleResource::getNavigationItems() : []),
+                            ...(DocumentResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? DocumentResource::getNavigationItems() : []),
+                            ...(MemberResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? MemberResource::getNavigationItems() : []),
+                            ...(LessonResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? LessonResource::getNavigationItems() : []),
                         ]),
 
                     // NavigationGroup::make(UserResource::canViewAny() || RoleResource::canViewAny() || PermissionResource::canViewAny() ? 'Administration' : '')

@@ -100,6 +100,9 @@ class UserResource extends Resource
                     ->label(new HtmlString('<span class="text-gray-400">Email</span>'))
                     ->searchable()
                     ->sortable()
+                    ->copyable()
+                    ->copyMessage('Le texte a été copié')
+                    ->copyMessageDuration(1500)
                     ->size(TextColumnSize::Small),
                 TextColumn::make('roles.name')
                     ->label(new HtmlString('<span class="text-gray-400">Rôle</span>'))
