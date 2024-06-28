@@ -57,20 +57,25 @@ class LessonResource extends Resource
                         ->label(new HtmlString('<span class="text-gray-400">Durée</span>'))
                         ->maxLength(255),
 
-                    // Fieldset::make()
-                    //     ->schema([
-                    //         Select::make('user_id')
-                    //             ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
-                    //             ->multiple()
-                    //             ->relationship('users', 'lastname')
-                    //             ->preload(),
-                    // ]),
+                    Fieldset::make()
+                        ->schema([
+                            Select::make('user_id')
+                                ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
+                                ->searchable()
+                                ->relationship('users')
+                                ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->firstname} {$record->lastname}")
+                                ->preload(),
+                        ]),
 
                     DateTimePicker::make('start')
-                        ->label(new HtmlString('<span class="text-gray-400">Début</span>')),
+                        ->label(new HtmlString('<span class="text-gray-400">Début</span>'))
+                        ->seconds(false)
+                        ->native(false),
 
                     DateTimePicker::make('end')
-                        ->label(new HtmlString('<span class="text-gray-400">Fin</span>')),
+                        ->label(new HtmlString('<span class="text-gray-400">Fin</span>'))
+                        ->seconds(false)
+                        ->native(false),
                 ]),
             ]);
     }
@@ -85,11 +90,11 @@ class LessonResource extends Resource
                     ->sortable()
                     ->size(TextColumnSize::Small),
 
-                // TextColumn::make('users.firstname')
-                //     ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
-                //     ->searchable()
-                //     ->sortable()
-                //     ->size(TextColumnSize::Small),
+                TextColumn::make('users.lastname')
+                    ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
+                    ->searchable()
+                    ->sortable()
+                    ->size(TextColumnSize::Small),
 
                 TextColumn::make('duration')
                     ->label(new HtmlString('<span class="text-gray-400">Durée</span>'))
@@ -105,12 +110,15 @@ class LessonResource extends Resource
                 TextColumn::make('end')
                     ->label(new HtmlString('<span class="text-gray-400">Fin</span>'))
                     ->searchable()
+                    ->sortable()
                     ->size(TextColumnSize::Small),
+
                 TextColumn::make('created_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de création</span>'))
                     // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small),
+                    
                 TextColumn::make('updated_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de modification</span>'))
                     // ->date('d-m-Y')

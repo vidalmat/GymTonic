@@ -71,23 +71,27 @@ class CalendarWidget extends FullCalendarWidget
                 ->label(new HtmlString('<span class="text-gray-400">Libellé</span>')),
             TextInput::make('duration')
                 ->label(new HtmlString('<span class="text-gray-400">Durée</span>')),
-            // Fieldset::make()
-            //     ->schema([
-            //         Select::make('user_id')
-            //             ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
-            //             ->searchable()
-            //             ->relationship('users')
-            //             ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->firstname} {$record->lastname}")
-            //             ->preload(),
-            //     ]),
+            Fieldset::make()
+                ->schema([
+                    Select::make('user_id')
+                        ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
+                        ->searchable()
+                        ->relationship('users')
+                        ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->firstname} {$record->lastname}")
+                        ->preload(),
+                ]),
             Grid::make()
                 ->schema([
                     DateTimePicker::make('start')
-                        ->label(new HtmlString('<span class="text-gray-400">Début</span>')),
+                        ->label(new HtmlString('<span class="text-gray-400">Début</span>'))
+                        ->seconds(false)
+                        ->native(false),
                     DateTimePicker::make('end')
-                        ->label(new HtmlString('<span class="text-gray-400">Fin</span>')),
+                        ->label(new HtmlString('<span class="text-gray-400">Fin</span>'))
+                        ->seconds(false)
+                        ->native(false),
                 ])
-        ->statePath('data'),
+        // ->statePath('data'),
         ];
     }
 
@@ -106,7 +110,7 @@ class CalendarWidget extends FullCalendarWidget
                     function (Lesson $record, Form $form, array $arguments) {
                         $form->fill([
                             'label' => $record->label,
-                            // 'users.lastname' => $record->lastname,
+                            'users.lastname' => $record->lastname,
                             'duration' => $record->duration,
                             'start' => $arguments['event']['start'] ?? $record->start,
                             'end' => $arguments['event']['end'] ?? $record->end
@@ -124,6 +128,7 @@ class CalendarWidget extends FullCalendarWidget
                 $form->fill([
                     'label' => $record->label,
                     'duration' => $record->duration,
+                    'users.lastname' => $record->lastname,
                     'start' => $arguments['event']['start'] ?? $record->start,
                     'end' => $arguments['event']['end'] ?? $record->end
                 ]);
@@ -154,6 +159,9 @@ class CalendarWidget extends FullCalendarWidget
                 'left' => 'dayGridWeek,dayGridDay',
                 'center' => 'title',
                 'right' => 'prev,next today',
+            ],
+            'events' => [
+                'eventBackgroundColor'
             ],
         ];
     }

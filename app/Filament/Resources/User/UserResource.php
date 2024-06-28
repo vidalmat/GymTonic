@@ -89,17 +89,22 @@ class UserResource extends Resource
                 TextColumn::make('lastname')
                     ->label(new HtmlString('<span class="text-gray-400">Nom</span>'))
                     ->searchable()
+                    ->sortable()
                     ->size(TextColumnSize::Small),
                 TextColumn::make('firstname')
                     ->label(new HtmlString('<span class="text-gray-400">Prénom</span>'))
                     ->searchable()
+                    ->sortable()
                     ->size(TextColumnSize::Small),
                 TextColumn::make('email')
                     ->label(new HtmlString('<span class="text-gray-400">Email</span>'))
                     ->searchable()
+                    ->sortable()
                     ->size(TextColumnSize::Small),
                 TextColumn::make('roles.name')
                     ->label(new HtmlString('<span class="text-gray-400">Rôle</span>'))
+                    ->searchable()
+                    ->sortable()
                     ->badge()
                     ->size(TextColumnSize::Small)
                     ->color(fn (string $state): string => match ($state) {
@@ -110,11 +115,13 @@ class UserResource extends Resource
                 TextColumn::make('created_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de création</span>'))
                     // ->date('d-m-Y')
+                    ->searchable()
                     ->sortable()
                     ->size(TextColumnSize::Small),
                 TextColumn::make('updated_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de modification</span>'))
                     // ->date('d-m-Y')
+                    ->searchable()
                     ->sortable()
                     ->size(TextColumnSize::Small)
                     ->color(function (User $record) {

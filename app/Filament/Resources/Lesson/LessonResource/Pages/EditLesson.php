@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\Lesson\LessonResource\Pages;
 
-use App\Filament\Resources\Lesson\LessonResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Support\Htmlable;
+use App\Filament\Resources\Lesson\LessonResource;
 
 class EditLesson extends EditRecord
 {
@@ -20,5 +21,10 @@ class EditLesson extends EditRecord
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('index');
+    }
+
+    public function getTitle(): string | Htmlable
+    {
+        return "Modifier le cours " . $this->getRecord()?->label;
     }
 }
