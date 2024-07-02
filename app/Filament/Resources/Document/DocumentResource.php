@@ -51,6 +51,7 @@ class DocumentResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->striped()
             ->columns([
                 TextColumn::make('label')
                     ->label(new HtmlString('<span class="text-gray-400">Libellé</span>'))

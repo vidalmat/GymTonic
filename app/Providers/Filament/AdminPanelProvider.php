@@ -19,6 +19,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use App\Filament\Resources\Lesson\LessonResource;
 use App\Filament\Resources\Member\MemberResource;
+use App\Filament\Resources\Network\NetworkResource;
 use App\Filament\Resources\Document\DocumentResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -73,6 +74,7 @@ class AdminPanelProvider extends PanelProvider
                     NavigationGroup::make()
                         ->items([
                             ...Dashboard::getNavigationItems(),
+                            ...(NetworkResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? NetworkResource::getNavigationItems() : []),
                         ]),
 
                     NavigationGroup::make(

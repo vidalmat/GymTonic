@@ -83,6 +83,7 @@ class LessonResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->striped()
             ->columns([
                 TextColumn::make('label')
                     ->label(new HtmlString('<span class="text-gray-400">Libellé</span>'))
@@ -118,7 +119,7 @@ class LessonResource extends Resource
                     // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small),
-                    
+
                 TextColumn::make('updated_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de modification</span>'))
                     // ->date('d-m-Y')

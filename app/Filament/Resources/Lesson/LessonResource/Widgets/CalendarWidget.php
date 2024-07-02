@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use Filament\Actions\Action;
 use Illuminate\Support\HtmlString;
 use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Fieldset;
 use Illuminate\Database\Eloquent\Model;
@@ -148,7 +149,8 @@ class CalendarWidget extends FullCalendarWidget
 
     public static function canView(): bool
     {
-        return true;
+        // return true;
+        return Auth::user() && (Auth::user()->isSuperAdmin() || Auth::user()->isManager());
     }
 
     public function config(): array
