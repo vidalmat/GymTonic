@@ -29,9 +29,10 @@ use BezhanSalleh\FilamentShield\Resources\RoleResource;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
+use App\Filament\Resources\User\UserResource\Pages\MailPage;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\User\UserResource\Widgets\UserOverview;
-use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
 use App\Filament\Resources\Lesson\LessonResource\Widgets\CalendarWidget;
 
 class AdminPanelProvider extends PanelProvider
@@ -90,6 +91,7 @@ class AdminPanelProvider extends PanelProvider
                             ...(DocumentResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? DocumentResource::getNavigationItems() : []),
                             ...(MemberResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? MemberResource::getNavigationItems() : []),
                             ...(LessonResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? LessonResource::getNavigationItems() : []),
+                            ...(Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? MailPage::getNavigationItems() : []),
                         ]),
 
                     // NavigationGroup::make(UserResource::canViewAny() || RoleResource::canViewAny() || PermissionResource::canViewAny() ? 'Administration' : '')

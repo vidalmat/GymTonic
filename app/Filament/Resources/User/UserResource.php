@@ -22,6 +22,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
+use App\Filament\Resources\User\UserResource\Pages\MailPage;
 use App\Filament\Resources\User\UserResource\Pages\EditUser;
 use App\Filament\Resources\User\UserResource\Pages\ListUsers;
 use App\Filament\Resources\User\UserResource\Pages\CreateUser;
@@ -174,6 +175,7 @@ class UserResource extends Resource
         return [
             'index' => ListUsers::route('/'),
             'create' => CreateUser::route('/creer'),
+            'mail' => MailPage::route('/email'),
             'edit' => EditUser::route('/{record}/modifier'),
         ];
     }
