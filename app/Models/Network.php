@@ -13,5 +13,15 @@ class Network extends Model
     protected $table = 'networks';
     protected $connection = 'mysql';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'label',
+        'url',
+    ];
+
     protected $guarded = [];
 }

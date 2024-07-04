@@ -28,34 +28,34 @@ class MailPage extends Page
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
-    public function getActions(): array
-    {
-        return [
-            Action::make('sendEmail')
-            ->label('Envoyer un email')
-            ->action(function () {
+    // public function getActions(): array
+    // {
+    //     return [
+    //         Action::make('sendEmail')
+    //         ->label('Envoyer un email')
+    //         ->action(function () {
 
-                $details = [
-                    'title' => 'Test mail de Gym Tonic',
-                    'body' => 'Ceci est un test d\'email de Gym Tonic'
-                ];
+    //             $details = [
+    //                 'title' => 'Test mail de Gym Tonic',
+    //                 'body' => 'Ceci est un test d\'email de Gym Tonic'
+    //             ];
 
-                if (empty($details['title']) || empty($details['body'])) {
-                    $this->notify('danger', 'Les détails de l\'e-mail ne sont pas définis correctement');
-                    return;
-                }
+    //             if (empty($details['title']) || empty($details['body'])) {
+    //                 $this->notify('danger', 'Les détails de l\'e-mail ne sont pas définis correctement');
+    //                 return;
+    //             }
 
-                try {
-                    Mail::to('vidalmat06@gmail.com')->send(new MailMember($details));
+    //             try {
+    //                 Mail::to('vidalmat06@gmail.com')->send(new MailMember($details));
 
-                    Notification::make()
-                        ->title('L\'email a été envoyé avec succès')
-                        ->success()
-                        ->send();
-                } catch (\Exception $e) {
-                    report($e);
-                }
-            }),
-        ];
-    }
+    //                 Notification::make()
+    //                     ->title('L\'email a été envoyé avec succès')
+    //                     ->success()
+    //                     ->send();
+    //             } catch (\Exception $e) {
+    //                 report($e);
+    //             }
+    //         }),
+    //     ];
+    // }
 }

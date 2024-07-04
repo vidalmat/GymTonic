@@ -15,6 +15,17 @@ class Member extends Model
     protected $table = 'members';
     protected $connection = 'mysql';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'lastname',
+        'firstname',
+        'email',
+    ];
+
     protected $guarded = [];
 
     public function documents(): BelongsToMany
@@ -25,5 +36,10 @@ class Member extends Model
     public function hasDocument($documentType)
     {
         return $this->documents()->where('label', $documentType)->exists();
+    }
+
+    public function emails(): BelongsToMany
+    {
+        return $this->belongsToMany(MailUser::class, 'mail_recipient', 'mail_id', 'member_id');
     }
 }

@@ -175,7 +175,7 @@ class UserResource extends Resource
         return [
             'index' => ListUsers::route('/'),
             'create' => CreateUser::route('/creer'),
-            'mail' => MailPage::route('/email'),
+            // 'mail' => MailPage::route('/email'),
             'edit' => EditUser::route('/{record}/modifier'),
         ];
     }

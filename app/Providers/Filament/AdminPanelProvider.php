@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Navigation\NavigationGroup;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Navigation\NavigationBuilder;
+use App\Filament\Resources\Mail\MailResource;
 use App\Filament\Resources\User\UserResource;
 use App\Filament\Pages\Auth\CustomEditProfile;
 use Illuminate\Session\Middleware\StartSession;
@@ -44,6 +45,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->passwordReset()
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -91,7 +93,8 @@ class AdminPanelProvider extends PanelProvider
                             ...(DocumentResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? DocumentResource::getNavigationItems() : []),
                             ...(MemberResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? MemberResource::getNavigationItems() : []),
                             ...(LessonResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? LessonResource::getNavigationItems() : []),
-                            ...(Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? MailPage::getNavigationItems() : []),
+                            // ...(Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? MailPage::getNavigationItems() : []),
+                            ...(MailResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? MailResource::getNavigationItems() : []),
                         ]),
 
                     // NavigationGroup::make(UserResource::canViewAny() || RoleResource::canViewAny() || PermissionResource::canViewAny() ? 'Administration' : '')
