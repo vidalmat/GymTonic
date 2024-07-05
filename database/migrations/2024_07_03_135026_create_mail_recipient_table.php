@@ -13,8 +13,8 @@ return new class extends Migration
     {
         if (!Schema::hasTable('mail_recipient')) {
             Schema::create('mail_recipient', function (Blueprint $table) {
-                $table->foreignUuid('mail_id')->constrained('mails');
-                $table->foreignUuid('member_id')->constrained('members');
+                $table->foreignUuid('mail_id')->constrained('mails')->onDelete('cascade');
+                $table->foreignUuid('member_id')->constrained('members')->onDelete('cascade');
             });
         }
     }

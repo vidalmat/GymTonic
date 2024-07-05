@@ -20,8 +20,10 @@ class MailUser extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'send_to',
         'subject',
         'message',
+        'sent',
     ];
 
     protected $casts = [];
@@ -32,4 +34,9 @@ class MailUser extends Model
     {
         return $this->belongsToMany(Member::class, 'mail_recipient', 'mail_id', 'member_id');
     }
+
+    public function getSendToAttribute($value)
+{
+    return $value;
+}
 }

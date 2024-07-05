@@ -28,7 +28,9 @@ class Lesson extends Model
     ];
 
 
-    protected $casts = [];
+    protected $casts = [
+        'dates' => 'array',
+    ];
 
     protected $guarded = [];
 

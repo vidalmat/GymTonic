@@ -120,8 +120,9 @@ class MemberResource extends Resource
                     ->sortable()
                     ->extraAttributes(['class' => 'flex justify-center'])
                     ->boolean()
-                    ->trueColor('success')
-                    ->falseColor('danger'),
+                    ->getStateUsing(function (Member $record) {
+                        return $record->hasAllRequiredDocuments();
+                    }),
             ])
             ->filters([
                 //

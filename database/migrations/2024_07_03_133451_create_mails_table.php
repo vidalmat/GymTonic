@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('mails', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('send_to')->default('specific');
             $table->string('subject');
             $table->text('message');
+            $table->boolean('sent')->default(0);
             $table->timestamps();
         });
     }

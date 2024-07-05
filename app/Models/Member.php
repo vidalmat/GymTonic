@@ -42,4 +42,10 @@ class Member extends Model
     {
         return $this->belongsToMany(MailUser::class, 'mail_recipient', 'mail_id', 'member_id');
     }
+
+    public function hasAllRequiredDocuments(): bool
+    {
+        $requiredDocumentCount = 5;
+        return $this->documents()->count() >= $requiredDocumentCount;
+    }
 }

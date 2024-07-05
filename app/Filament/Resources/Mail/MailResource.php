@@ -2,37 +2,31 @@
 
 namespace App\Filament\Resources\Mail;
 
-use Filament\Forms;
-use Filament\Tables;
 use App\Models\Member;
 use App\Mail\MailMember;
 use App\Models\MailUser;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Arr;
-use App\Models\MailRecipient;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Radio;
 use Illuminate\Support\Facades\Mail;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
-use App\Filament\Resources\Mail\MailResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use App\Filament\Resources\Mail\MailResource\Pages\EditMail;
 use App\Filament\Resources\Mail\MailResource\Pages\ListMails;
 use App\Filament\Resources\Mail\MailResource\Pages\CreateMail;
-use App\Filament\Resources\Mail\MailResource\RelationManagers;
 
 class MailResource extends Resource
 {
@@ -55,20 +49,31 @@ class MailResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Select::make('members')
-                    ->label(new HtmlString('<span class="text-gray-400">Membres</span>'))
-                    ->searchable()
-                    ->relationship('members')
-                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->firstname} {$record->lastname}")
-                    ->preload()
-                    ->required(),
-                TextInput::make('subject')
+        ->schema([
+            Radio::make('send_to')
+                ->label(new HtmlString('<span class="text-gray-400">Envoyer à</span>'))
+                ->options([
+                    'specific' => 'Membres spécifiques',
+                    'all' => 'Tous les membres',
+                ])
+                ->default('specific')
+                ->reactive()
+                ->required(),
+            Select::make('members')
+                ->label(new HtmlString('<span class="text-gray-400">Membres</span>'))
+                ->searchable()
+                ->multiple()
+                ->relationship('members')
+                ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->firstname} {$record->lastname}")
+                ->preload()
+                ->required()
+                ->hidden(fn (callable $get) => $get('send_to') === 'all'),
+            TextInput::make('subject')
                 ->label(new HtmlString('<span class="text-gray-400">Sujet</span>'))
-                    ->required(),
-                Textarea::make('message')
+                ->required(),
+            Textarea::make('message')
                 ->label(new HtmlString('<span class="text-gray-400">Message</span>'))
-                    ->required(),
+                ->required(),
             ]);
     }
 
@@ -81,7 +86,15 @@ class MailResource extends Resource
                 ->label(new HtmlString('<span class="text-gray-400">Sujet</span>')),
 
                 TextColumn::make('message')
-                ->label(new HtmlString('<span class="text-gray-400">Message</span>')),
+                ->label(new HtmlString('<span class="text-gray-400">Message</span>'))
+                ->limit(20)
+                ->tooltip(function (TextColumn $column): ?string {
+                    $state = $column->getState();
+                    if (strlen($state) <= $column->getCharacterLimit()) {
+                        return null;
+                    }
+                    return $state;
+                }),
 
                 TextColumn::make('created_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de création</span>'))
@@ -90,7 +103,7 @@ class MailResource extends Resource
                     ->size(TextColumnSize::Small),
 
                 TextColumn::make('updated_at')
-                    ->label(new HtmlString('<span class="text-blue-400">Date de modification</span>'))
+                    ->label(new HtmlString('<span class="text-gray-400">Date de modification</span>'))
                     // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small)
@@ -99,18 +112,44 @@ class MailResource extends Resource
                             return 'info';
                         }
                     }),
+                // IconColumn::make('sent')
+                //     ->label(new HtmlString('<span class="text-gray-400">Email envoyé</span>'))
+                //     ->sortable()
+                //     ->extraAttributes(['class' => 'flex justify-center'])
+                //     ->boolean()
+                //     ->trueColor('success')
+                //     ->falseColor('danger'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 EditAction::make(),
+                DeleteAction::make()
+                    ->modalHeading(function ($record) {
+                        return 'Suppression de ' . $record->lastname;
+                    })
+                    ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
+                    ->successNotificationTitle(function ($record) {
+                        return 'Le document ' . $record->label . ' a été supprimé';
+                    }),
                 Action::make('sendEmail')
                     ->requiresConfirmation()
-                    ->label(new HtmlString('<span class="text-blue-600">Envoyer un email</span>'))
+                    ->icon('heroicon-c-arrow-long-right')
+                    ->label(function (MailUser $record) {
+                        if ($record->sent === 1) {
+                            return new HtmlString('<span class="text-success">Réexpédier email</span>');
+                        } else {
+                            return new HtmlString('<span class="text-blue-600">Envoyer cet email</span>');
+                        }
+                    })
+                    ->color(function (MailUser $record) {
+                        if ($record->sent === 1) {
+                            return 'success';
+                        }
+                    })
                     ->action(function (MailUser $record) {
-
-                        if (empty($record['subject']) || empty($record['message']) || $record->members->isEmpty()) {
+                        if (empty($record['subject']) || empty($record['message'])) {
                             Notification::make()
                                 ->title('Les données de l\'email ne sont pas complètes')
                                 ->danger()
@@ -123,9 +162,15 @@ class MailResource extends Resource
                             'body' => $record['message'],
                         ];
 
-                        $email = Arr::pluck($record->members, 'email');
+                        dd($record);
 
-                        if (empty($email)) {
+                        if ($record->send_to === 'all') {
+                            $emails = Member::pluck('email')->toArray();
+                        } else {
+                            $emails = $record->members->pluck('email')->toArray();
+                        }
+
+                        if (empty($emails)) {
                             Notification::make()
                                 ->title('Aucune adresse e-mail valide trouvée.')
                                 ->danger()
@@ -134,10 +179,10 @@ class MailResource extends Resource
                         }
 
                         try {
-                            Mail::to($email)->send(new MailMember($details));
+                            Mail::to($emails)->send(new MailMember($details));
 
                             Notification::make()
-                                ->title('L\'e-mail a été envoyé avec succès à : ' . implode(', ', $email))
+                                ->title('L\'e-mail a été envoyé avec succès.')
                                 ->success()
                                 ->send();
                         } catch (\Exception $e) {
