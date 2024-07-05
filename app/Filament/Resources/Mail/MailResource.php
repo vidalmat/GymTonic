@@ -13,9 +13,7 @@ use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Radio;
 use Illuminate\Support\Facades\Mail;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
@@ -28,6 +26,7 @@ use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use App\Filament\Resources\Mail\MailResource\Pages\EditMail;
 use App\Filament\Resources\Mail\MailResource\Pages\ListMails;
 use App\Filament\Resources\Mail\MailResource\Pages\CreateMail;
+use BezhanSalleh\FilamentShield\Support\Utils;
 
 class MailResource extends Resource
 {
@@ -100,7 +99,15 @@ class MailResource extends Resource
             ->striped()
             ->columns([
                 TextColumn::make('subject')
-                ->label(new HtmlString('<span class="text-gray-400">Sujet</span>')),
+                ->label(new HtmlString('<span class="text-gray-400">Sujet</span>'))
+                ->limit(10)
+                ->tooltip(function (TextColumn $column): ?string {
+                    $state = $column->getState();
+                    if (strlen($state) <= $column->getCharacterLimit()) {
+                        return null;
+                    }
+                    return strip_tags(html_entity_decode($state));
+                }),
 
                 TextColumn::make('message')
                 ->label(new HtmlString('<span class="text-gray-400">Message</span>'))

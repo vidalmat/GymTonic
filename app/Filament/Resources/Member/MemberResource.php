@@ -71,9 +71,7 @@ class MemberResource extends Resource
                         ->schema([
                             CheckboxList::make('documents')
                                 ->label('Documents')
-                                // ->multiple()
                                 ->relationship('documents', 'label')
-                                // ->preload()
                                 ->options(function () {
                                     return Document::all()->pluck('label', 'id');
                                 })
@@ -101,12 +99,10 @@ class MemberResource extends Resource
                     ->size(TextColumnSize::Small),
                 TextColumn::make('created_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de création</span>'))
-                    // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small),
                 TextColumn::make('updated_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de modification</span>'))
-                    // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small)
                     ->color(function (Member $record) {
@@ -146,75 +142,6 @@ class MemberResource extends Resource
             ]);
     }
 
-    // public static function infolist(Infolist $infolist): Infolist
-    // {
-
-    //     return $infolist
-    //         ->schema([
-    //             Split::make([
-    //                 FieldsetMember::make('')
-    //                     ->columns(5)
-    //                     ->schema([
-    //                         TextEntry::make('lastname')
-    //                             ->label(new HtmlString('<span class="text-gray-400">Nom</span>')),
-    //                         TextEntry::make('firstname')
-    //                             ->label(new HtmlString('<span class="text-gray-400">Prénom</span>')),
-    //                         TextEntry::make('email')
-    //                             ->label(new HtmlString('<span class="text-gray-400">Email</span>')),
-    //                         // IconEntry::make('email')
-    //                         //     ->label(new HtmlString('<span class="text-gray-400">Documents</span>'))
-    //                         //     ->boolean()
-    //                         //         ->trueColor('success')
-    //                         //         ->falseColor('danger'),
-    //                     ]),
-    //             ]),
-    //             Split::make([
-    //                 FieldsetMember::make('Document(s)')
-    //                     ->columns(5)
-    //                     ->schema([
-    //                         IconEntry::make('documents.label')
-    //                             ->label('Charte de l\'adhérent')
-    //                             ->boolean(function ($record) {
-    //                     foreach ($record->documents as $document) {
-    //                         if ($document->label === 'Charte de l\'adhérent'
-    //                         ) {
-    //                             return true;
-    //                         }
-    //                     }
-    //                     return false;
-    //                             })
-    //                             // ->trueColor('success')
-    //                             ->falseColor('danger'),
-    //                         IconEntry::make('documents.label')
-    //                             ->label('Fiche d\'inscription')
-    //                             ->boolean(function ($record) {
-    //                                 return $record->documents->contains('label', "Charte de l'adhérent");
-    //                             })
-    //                             ->trueColor('success')
-    //                             ->falseColor('danger'),
-    //                         IconEntry::make('documents.cover_letter')
-    //                             ->label('Lettre d\'accompagnement')
-    //                             ->boolean(function ($record) {
-    //                                 return $record->documents->contains('label', 'Charte de l\'adhérent');
-    //                             })
-    //                             ->boolean(fn ($record) => $record->documents->contains('label', 'Lettre d\'accompagnement'))
-    //                             ->trueColor('success')
-    //                             ->falseColor('danger'),
-    //                         IconEntry::make('documents.partner_document')
-    //                             ->label('Documents partenaires')
-    //                             ->boolean(fn ($record) => $record->documents->contains('label', 'Documents partenaires'))
-    //                             ->trueColor('success')
-    //                             ->falseColor('danger'),
-    //                         IconEntry::make('documents.medical_certificat')
-    //                             ->label('Certificat médical')
-    //                             ->boolean(fn ($record) => $record->documents->contains('label', 'Certificat médical'))
-    //                             ->trueColor('success')
-    //                             ->falseColor('danger'),
-    //                     ]),
-    //                 ]),
-    //         ])->columns(1);
-    // }
-
     public static function getPages(): array
     {
         return [
@@ -236,7 +163,6 @@ class MemberResource extends Resource
     {
         return $page->generateNavigationItems([
             ViewMember::class,
-            // MemberDocument::class,
         ]);
     }
 }

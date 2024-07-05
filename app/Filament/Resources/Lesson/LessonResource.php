@@ -170,10 +170,10 @@ class LessonResource extends Resource
         ];
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return Utils::isResourceNavigationBadgeEnabled()
-            ? strval(static::getEloquentQuery()->count())
-            : null;
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return Utils::isResourceNavigationBadgeEnabled()
+    //         ? strval(static::getEloquentQuery()->count())
+    //         : null;
+    // }
 }

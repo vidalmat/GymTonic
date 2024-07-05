@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 use Filament\Pages;
 use Filament\Panel;
-use Filament\Widgets;
 use Filament\PanelProvider;
 use Filament\Pages\Dashboard;
 use Filament\Support\Colors\Color;
@@ -22,6 +21,7 @@ use App\Filament\Resources\Lesson\LessonResource;
 use App\Filament\Resources\Member\MemberResource;
 use App\Filament\Resources\Network\NetworkResource;
 use App\Filament\Resources\Document\DocumentResource;
+use App\Filament\Resources\ErrorLog\ErrorLogResource;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
@@ -31,7 +31,6 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Saade\FilamentFullCalendar\FilamentFullCalendarPlugin;
-use App\Filament\Resources\User\UserResource\Pages\MailPage;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use App\Filament\Resources\User\UserResource\Widgets\UserOverview;
 use App\Filament\Resources\Lesson\LessonResource\Widgets\CalendarWidget;
@@ -41,7 +40,9 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->default()
+            // ->brandLogo(asset('GymTonic2.png'))
+            ->brandName('Gym Tonic')
+            ->default('Gym Tonic')
             ->id('admin')
             ->path('admin')
             ->login()
@@ -97,13 +98,12 @@ class AdminPanelProvider extends PanelProvider
                             ...(MailResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? MailResource::getNavigationItems() : []),
                         ]),
 
-                    // NavigationGroup::make(UserResource::canViewAny() || RoleResource::canViewAny() || PermissionResource::canViewAny() ? 'Administration' : '')
-                    //     ->items([
-                    //         ...(PermissionResource::canViewAny() ? PermissionResource::getNavigationItems() : []),
-                    //         ...(RoleResource::canViewAny() ? RoleResource::getNavigationItems() : []),
-                    //         ...(UserResource::canViewAny() ? UserResource::getNavigationItems() : []),
-                    //         ...(KonectUserResource::canViewAny() ? KonectUserResource::getNavigationItems() : []),
-                    //     ]),
+                        NavigationGroup::make(
+                            (
+                                ErrorLogResource::canViewAny() ? 'Système' : ''))
+                            ->items([
+                                ...(ErrorLogResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? ErrorLogResource::getNavigationItems() : []),
+                            ]),
                 ]);
             })
             ->profile(CustomEditProfile::class)
