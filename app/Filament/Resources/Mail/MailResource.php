@@ -20,6 +20,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -71,8 +72,24 @@ class MailResource extends Resource
             TextInput::make('subject')
                 ->label(new HtmlString('<span class="text-gray-400">Sujet</span>'))
                 ->required(),
-            Textarea::make('message')
+            RichEditor::make('message')
                 ->label(new HtmlString('<span class="text-gray-400">Message</span>'))
+                ->toolbarButtons([
+                    'attachFiles',
+                    'blockquote',
+                    'bold',
+                    'bulletList',
+                    'codeBlock',
+                    'h2',
+                    'h3',
+                    'italic',
+                    'link',
+                    'orderedList',
+                    'redo',
+                    'strike',
+                    'underline',
+                    'undo',
+                ])
                 ->required(),
             ]);
     }
@@ -88,12 +105,13 @@ class MailResource extends Resource
                 TextColumn::make('message')
                 ->label(new HtmlString('<span class="text-gray-400">Message</span>'))
                 ->limit(20)
+                ->html()
                 ->tooltip(function (TextColumn $column): ?string {
                     $state = $column->getState();
                     if (strlen($state) <= $column->getCharacterLimit()) {
                         return null;
                     }
-                    return $state;
+                    return strip_tags(html_entity_decode($state));
                 }),
 
                 TextColumn::make('created_at')
@@ -127,11 +145,11 @@ class MailResource extends Resource
                 EditAction::make(),
                 DeleteAction::make()
                     ->modalHeading(function ($record) {
-                        return 'Suppression de ' . $record->lastname;
+                        return 'Suppression de ' . $record->subject;
                     })
-                    ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
+                    ->modalDescription("Êtes-vous sur de vouloir supprimer cet email ?")
                     ->successNotificationTitle(function ($record) {
-                        return 'Le document ' . $record->label . ' a été supprimé';
+                        return 'L\'email ' . $record->subject . ' a été supprimé';
                     }),
                 Action::make('sendEmail')
                     ->requiresConfirmation()
@@ -162,8 +180,6 @@ class MailResource extends Resource
                             'body' => $record['message'],
                         ];
 
-                        dd($record);
-
                         if ($record->send_to === 'all') {
                             $emails = Member::pluck('email')->toArray();
                         } else {
@@ -181,14 +197,19 @@ class MailResource extends Resource
                         try {
                             Mail::to($emails)->send(new MailMember($details));
 
+                            if ($record->sent === 0) {
+                                $record->sent = 1;
+                                $record->save();
+                            }
+
                             Notification::make()
-                                ->title('L\'e-mail a été envoyé avec succès.')
+                                ->title('L\'email a été envoyé avec succès.')
                                 ->success()
                                 ->send();
                         } catch (\Exception $e) {
                             report($e);
                             Notification::make()
-                                ->title('L\'envoi de l\'e-mail a échoué.')
+                                ->title('L\'envoi de l\'email a échoué.')
                                 ->danger()
                                 ->send();
                         }

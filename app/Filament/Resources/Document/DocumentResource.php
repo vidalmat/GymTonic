@@ -81,9 +81,9 @@ class DocumentResource extends Resource
                 EditAction::make(),
                 DeleteAction::make()
                     ->modalHeading(function ($record) {
-                        return 'Suppression de ' . $record->lastname;
+                        return 'Suppression de ' . $record->label;
                     })
-                    ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
+                    ->modalDescription("Êtes-vous sur de vouloir supprimer ce libellé ?")
                     ->successNotificationTitle(function ($record) {
                         return 'Le document ' . $record->label . ' a été supprimé';
                     }),

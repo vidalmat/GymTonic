@@ -132,11 +132,11 @@ class MemberResource extends Resource
                 EditAction::make(),
                 DeleteAction::make()
                     ->modalHeading(function ($record) {
-                        return 'Suppression de ' . $record->lastname;
+                        return 'Suppression de ' . $record->lastname . ' ' . $record->lastname;
                     })
-                    ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
+                    ->modalDescription("Êtes-vous sur de vouloir supprimer cet adhérent ?")
                     ->successNotificationTitle(function ($record) {
-                        return 'L\'utilisateur ' . $record->lastname . ' a été supprimé';
+                        return 'L\'adhérent ' . $record->lastname . ' ' . $record->firstname . ' a été supprimé';
                     }),
             ])
             ->bulkActions([
@@ -222,7 +222,6 @@ class MemberResource extends Resource
             'create' => CreateMember::route('/créer'),
             'view' => ViewMember::route('/{record}'),
             'edit' => EditMember::route('/{record}/modifier'),
-            'document' => MemberDocument::route('/{record}/document'),
         ];
     }
 
@@ -239,12 +238,5 @@ class MemberResource extends Resource
             ViewMember::class,
             // MemberDocument::class,
         ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            MemberDocument::class,
-        ];
     }
 }

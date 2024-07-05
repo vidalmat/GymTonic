@@ -149,7 +149,7 @@ class UserResource extends Resource
                 EditAction::make(),
                 DeleteAction::make()
                     ->modalHeading(function ($record) {
-                        return 'Suppression de ' . $record->lastname ;
+                        return 'Suppression de ' . $record->lastname . ' ' . $record->lastname;
                     })
                     ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
                     ->successNotificationTitle(function ($record) {

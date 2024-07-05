@@ -76,11 +76,11 @@ class Calendar extends ManageRelatedRecords
                 EditAction::make(),
                 DeleteAction::make()
                 ->modalHeading(function ($record) {
-                    return 'Suppression de ' . $record->lastname;
+                    return 'Suppression de ' . $record->type;
                 })
-                    ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
+                    ->modalDescription("Êtes-vous sur de vouloir supprimer ce créneau ?")
                     ->successNotificationTitle(function ($record) {
-                        return 'L\'utilisateur ' . $record->lastname . ' a été supprimé';
+                        return 'Le créneau ' . $record->type . ' a été supprimé';
                     }),
             ])
             ->bulkActions([

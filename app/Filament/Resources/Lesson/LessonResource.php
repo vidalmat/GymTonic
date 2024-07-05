@@ -106,23 +106,23 @@ class LessonResource extends Resource
                     ->label(new HtmlString('<span class="text-gray-400">Début</span>'))
                     ->searchable()
                     ->sortable()
+                    ->date('d/m/Y H:s')
                     ->size(TextColumnSize::Small),
 
                 TextColumn::make('end')
                     ->label(new HtmlString('<span class="text-gray-400">Fin</span>'))
                     ->searchable()
                     ->sortable()
+                    ->date('d/m/Y H:s')
                     ->size(TextColumnSize::Small),
 
                 TextColumn::make('created_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de création</span>'))
-                    // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small),
 
                 TextColumn::make('updated_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de modification</span>'))
-                    // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small)
                     ->color(function (Lesson $record) {
@@ -139,11 +139,11 @@ class LessonResource extends Resource
                 EditAction::make(),
                 DeleteAction::make()
                     ->modalHeading(function ($record) {
-                        return 'Suppression de ' . $record->lastname;
+                        return 'Suppression de ' . $record->label;
                     })
-                    ->modalDescription("Êtes-vous sur de vouloir supprimer cet utilisateur ?")
+                    ->modalDescription("Êtes-vous sur de vouloir supprimer ce cours ?")
                     ->successNotificationTitle(function ($record) {
-                        return 'L\'utilisateur ' . $record->lastname . ' a été supprimé';
+                        return 'Le cours ' . $record->label . ' a été supprimé';
                 }),
             ])
             ->bulkActions([
