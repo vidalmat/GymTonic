@@ -9,9 +9,10 @@ use Filament\Models\Contracts\HasName;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class User extends Authenticatable implements HasName,  FilamentUser
 {
@@ -69,5 +70,10 @@ class User extends Authenticatable implements HasName,  FilamentUser
     public function isManager(): bool
     {
         return $this->hasRole('Manager');
+    }
+
+    public function error_logs(): BelongsTo
+    {
+        return $this->belongsTo(ErrorLog::class);
     }
 }

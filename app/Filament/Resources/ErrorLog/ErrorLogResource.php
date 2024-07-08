@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ErrorLog;
 
-use Filament\Tables;
 use App\Models\ErrorLog;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
@@ -17,7 +16,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
-use App\Filament\Resources\ErrorLog\ErrorLogResource\Pages;
+use App\Filament\Resources\ErrorLog\ErrorLogResource\Pages\ViewErrorLog;
 use App\Filament\Resources\ErrorLog\ErrorLogResource\Pages\ListErrorLogs;
 
 class ErrorLogResource extends Resource
@@ -29,6 +28,8 @@ class ErrorLogResource extends Resource
     protected static ?string $modelLabel = 'Erreurs';
 
     public static ?string $slug = 'erreurs';
+
+    protected static string $relationship = 'users';
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
@@ -44,7 +45,12 @@ class ErrorLogResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('message')
+                TextColumn::make('users.lastname')
+                    ->label(new HtmlString('<span class="text-gray-400">Utilisateur</span>'))
+                    ->searchable()
+                    ->sortable()
+                    ->size(TextColumnSize::Small),
+                TextColumn::make('title')
                     ->label(new HtmlString('<span class="text-gray-400">Message</span>'))
                     ->searchable()
                     ->size(TextColumnSize::Small)->limit(50)
@@ -76,11 +82,11 @@ class ErrorLogResource extends Resource
                 ViewAction::make(),
                 DeleteAction::make()
                     ->modalHeading(function ($record) {
-                        return 'Suppression de ' . $record->message;
+                        return 'Suppression de ' . $record->title;
                     })
                     ->modalDescription("Êtes-vous sur de vouloir supprimer ce libellé ?")
                     ->successNotificationTitle(function ($record) {
-                        return 'Le message d\'erreur ' . $record->message . ' a été supprimé';
+                        return 'Le message d\'erreur ' . $record->title . ' a été supprimé';
                     }),
             ])
             ->bulkActions([
@@ -94,7 +100,13 @@ class ErrorLogResource extends Resource
     {
         return $infolist
             ->schema([
-                TextEntry::make('message')
+                TextEntry::make('users.lastname')
+                    ->columnSpanFull(),
+                TextEntry::make('title')
+                    ->columnSpanFull(),
+                TextEntry::make('code')
+                    ->columnSpanFull(),
+                TextEntry::make('stack_trace')
                     ->columnSpanFull(),
             ]);
     }
@@ -103,6 +115,7 @@ class ErrorLogResource extends Resource
     {
         return [
             'index' => ListErrorLogs::route('/'),
+            'view' => ViewErrorLog::route('/{record}'),
         ];
     }
 }

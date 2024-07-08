@@ -4,13 +4,17 @@ namespace App\Filament\Resources\Mail;
 
 use App\Models\Member;
 use App\Mail\MailMember;
+use App\Models\ErrorLog;
 use App\Models\MailUser;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Arr;
+use App\Events\LogErrorsLoaded;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Radio;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\EditAction;
@@ -22,11 +26,11 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
+use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use App\Filament\Resources\Mail\MailResource\Pages\EditMail;
 use App\Filament\Resources\Mail\MailResource\Pages\ListMails;
 use App\Filament\Resources\Mail\MailResource\Pages\CreateMail;
-use BezhanSalleh\FilamentShield\Support\Utils;
 
 class MailResource extends Resource
 {
@@ -98,6 +102,7 @@ class MailResource extends Resource
         return $table
             ->striped()
             ->columns([
+
                 TextColumn::make('subject')
                 ->label(new HtmlString('<span class="text-gray-400">Sujet</span>'))
                 ->limit(10)
@@ -184,7 +189,7 @@ class MailResource extends Resource
 
                         $details = [
                             'title' => $record['subject'],
-                            'body' => $record['message'],
+                            // 'body' => $record['message'],
                         ];
 
                         if ($record->send_to === 'all') {
@@ -214,12 +219,21 @@ class MailResource extends Resource
                                 ->success()
                                 ->send();
                         } catch (\Exception $e) {
+
+                            ErrorLog::create([
+                                'user_id' => Auth::user()->id,
+                                'title' => $e->getMessage(),
+                                'code' => $e->getCode(),
+                                'stack_trace' => $e->getTraceAsString(),
+                            ]);
+
                             report($e);
                             Notification::make()
                                 ->title('L\'envoi de l\'email a échoué.')
                                 ->danger()
                                 ->send();
                         }
+
                     }),
             ])
             ->bulkActions([

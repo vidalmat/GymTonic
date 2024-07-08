@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('error_logs', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->text('message');
+            $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
+            $table->text('title');
+            $table->integer('code')->nullable();
             $table->timestamps();
         });
     }
