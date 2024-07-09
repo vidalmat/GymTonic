@@ -189,7 +189,7 @@ class MailResource extends Resource
 
                         $details = [
                             'title' => $record['subject'],
-                            // 'body' => $record['message'],
+                            'body' => $record['message'],
                         ];
 
                         if ($record->send_to === 'all') {

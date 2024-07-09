@@ -18,6 +18,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use App\Filament\Resources\ErrorLog\ErrorLogResource\Pages\ViewErrorLog;
 use App\Filament\Resources\ErrorLog\ErrorLogResource\Pages\ListErrorLogs;
+use BezhanSalleh\FilamentShield\Support\Utils;
 
 class ErrorLogResource extends Resource
 {
@@ -101,12 +102,16 @@ class ErrorLogResource extends Resource
         return $infolist
             ->schema([
                 TextEntry::make('users.lastname')
+                    ->label(new HtmlString('<span class="text-gray-400">Utilisateur</span>'))
                     ->columnSpanFull(),
                 TextEntry::make('title')
+                    ->label(new HtmlString('<span class="text-gray-400">Titre</span>'))
                     ->columnSpanFull(),
                 TextEntry::make('code')
+                    ->label(new HtmlString('<span class="text-gray-400">Code</span>'))
                     ->columnSpanFull(),
                 TextEntry::make('stack_trace')
+                    ->label(new HtmlString('<span class="text-gray-400">Trace</span>'))
                     ->columnSpanFull(),
             ]);
     }
@@ -117,5 +122,12 @@ class ErrorLogResource extends Resource
             'index' => ListErrorLogs::route('/'),
             'view' => ViewErrorLog::route('/{record}'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return Utils::isResourceNavigationBadgeEnabled()
+            ? strval(static::getEloquentQuery()->count())
+            : null;
     }
 }
