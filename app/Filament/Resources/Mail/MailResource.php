@@ -217,7 +217,8 @@ class MailResource extends Resource
                             Notification::make()
                                 ->title('L\'email a été envoyé avec succès.')
                                 ->success()
-                                ->send();
+                                ->send()
+                                ->sendToDatabase(auth()->user());
                         } catch (\Exception $e) {
 
                             ErrorLog::create([

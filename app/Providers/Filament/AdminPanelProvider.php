@@ -124,6 +124,7 @@ class AdminPanelProvider extends PanelProvider
                     'firstDay' => 1, // start the week on a Monday
                     'eventDisplay' => 'block', // render a solid rectangle
                 ])
-            ]);
+            ])
+            ->databaseNotifications();
     }
 }
