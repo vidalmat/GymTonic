@@ -27,6 +27,7 @@ use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use BezhanSalleh\FilamentShield\Support\Utils;
+use AmidEsfahani\FilamentTinyEditor\TinyEditor;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use App\Filament\Resources\Mail\MailResource\Pages\EditMail;
 use App\Filament\Resources\Mail\MailResource\Pages\ListMails;
@@ -62,6 +63,7 @@ class MailResource extends Resource
                 ])
                 ->default('specific')
                 ->reactive()
+                ->columnSpan('full')
                 ->required(),
             Select::make('members')
                 ->label(new HtmlString('<span class="text-gray-400">Membres</span>'))
@@ -75,24 +77,13 @@ class MailResource extends Resource
             TextInput::make('subject')
                 ->label(new HtmlString('<span class="text-gray-400">Sujet</span>'))
                 ->required(),
-            RichEditor::make('message')
+            TinyEditor::make('message')
                 ->label(new HtmlString('<span class="text-gray-400">Message</span>'))
-                ->toolbarButtons([
-                    'attachFiles',
-                    'blockquote',
-                    'bold',
-                    'bulletList',
-                    'codeBlock',
-                    'h2',
-                    'h3',
-                    'italic',
-                    'link',
-                    'orderedList',
-                    'redo',
-                    'strike',
-                    'underline',
-                    'undo',
-                ])
+                ->fileAttachmentsDisk('public')
+                ->fileAttachmentsVisibility('public')
+                ->fileAttachmentsDirectory('uploads')
+                ->profile('default')
+                ->columnSpan('full')
                 ->required(),
             ]);
     }
@@ -128,13 +119,11 @@ class MailResource extends Resource
 
                 TextColumn::make('created_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de création</span>'))
-                    // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small),
 
                 TextColumn::make('updated_at')
                     ->label(new HtmlString('<span class="text-gray-400">Date de modification</span>'))
-                    // ->date('d-m-Y')
                     ->sortable()
                     ->size(TextColumnSize::Small)
                     ->color(function (MailUser $record) {
@@ -142,13 +131,6 @@ class MailResource extends Resource
                             return 'info';
                         }
                     }),
-                // IconColumn::make('sent')
-                //     ->label(new HtmlString('<span class="text-gray-400">Email envoyé</span>'))
-                //     ->sortable()
-                //     ->extraAttributes(['class' => 'flex justify-center'])
-                //     ->boolean()
-                //     ->trueColor('success')
-                //     ->falseColor('danger'),
             ])
             ->filters([
                 //
@@ -232,7 +214,8 @@ class MailResource extends Resource
                             Notification::make()
                                 ->title('L\'envoi de l\'email a échoué.')
                                 ->danger()
-                                ->send();
+                                ->send()
+                                ->sendToDatabase(auth()->user());
                         }
 
                     }),
