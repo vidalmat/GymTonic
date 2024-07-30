@@ -26,7 +26,6 @@ use App\Filament\Resources\Member\MemberResource\Pages\EditMember;
 use App\Filament\Resources\Member\MemberResource\Pages\ViewMember;
 use App\Filament\Resources\Member\MemberResource\Pages\ListMembers;
 use App\Filament\Resources\Member\MemberResource\Pages\CreateMember;
-use App\Filament\Resources\Member\MemberResource\Pages\MemberDocument;
 
 class MemberResource extends Resource
 {

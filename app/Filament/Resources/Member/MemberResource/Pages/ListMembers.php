@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Member\MemberResource\Pages;
 
-use App\Filament\Resources\Member\MemberResource;
 use Filament\Actions;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
+use App\Actions\Excel\ExcelImportAction;
+use App\Filament\Resources\Member\MemberResource;
 
 class ListMembers extends ListRecords
 {
@@ -13,7 +15,11 @@ class ListMembers extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
+            ExcelImportAction::make()
+            ->processCollectionUsing(function (string $modelClass, \Illuminate\Support\Collection $collection) {
+                return $collection;
+            }),
         ];
     }
 
