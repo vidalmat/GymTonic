@@ -53,6 +53,7 @@ class ExcelImportAction extends Action
         parent::setUp();
 
         $this->icon('heroicon-o-arrow-down-tray')
+            ->label('Import Excel')
             ->color('warning')
             ->form(fn () => $this->getDefaultForm())
             ->modalIcon('heroicon-o-arrow-down-tray')
@@ -130,7 +131,6 @@ class ExcelImportAction extends Action
 
             $member->documents()->sync($documentIds);
 
-            // Optionnel : si vous ne voulez pas remplacer les documents existants mais seulement ajouter ceux qui manquent
             // $member->documents()->syncWithoutDetaching($documentIds);
         }
 
