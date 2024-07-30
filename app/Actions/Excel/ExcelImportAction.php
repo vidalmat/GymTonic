@@ -136,6 +136,12 @@ class ExcelImportAction extends Action
                     // $member->documents()->syncWithoutDetaching($documentIds);
                 }
 
+                Notification::make()
+                ->title('L\'import du fichier a été ajouté avec succès.')
+                ->success()
+                ->send()
+                ->sendToDatabase(auth()->user());
+
                 return $processedCollection;
             };
 
