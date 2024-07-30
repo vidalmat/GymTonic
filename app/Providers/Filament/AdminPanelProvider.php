@@ -102,7 +102,7 @@ class AdminPanelProvider extends PanelProvider
                             (
                                 ErrorLogResource::canViewAny() ? 'Système' : ''))
                             ->items([
-                                ...(ErrorLogResource::canViewAny() && Auth::user()->isSuperAdmin() || Auth::user()->isManager() ? ErrorLogResource::getNavigationItems() : []),
+                                ...(ErrorLogResource::canViewAny() && Auth::user()->isSuperAdmin() ? ErrorLogResource::getNavigationItems() : []),
                             ]),
                 ]);
             })

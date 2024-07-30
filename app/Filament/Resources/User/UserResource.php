@@ -74,6 +74,7 @@ class UserResource extends Resource
                         ->schema([
                             Select::make('roles')
                                 ->label(new HtmlString('<span class="text-gray-400">Rôle</span>'))
+                                ->placeholder('Sélectionnez un rôle')
                                 ->multiple()
                                 ->relationship('roles', 'name')
                                 ->preload(),

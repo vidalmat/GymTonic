@@ -67,6 +67,7 @@ class MailResource extends Resource
                 ->required(),
             Select::make('members')
                 ->label(new HtmlString('<span class="text-gray-400">Membres</span>'))
+                ->placeholder('Sélectionnez un adhérent')
                 ->searchable()
                 ->multiple()
                 ->relationship('members')

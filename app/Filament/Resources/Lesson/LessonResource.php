@@ -61,6 +61,7 @@ class LessonResource extends Resource
                         ->schema([
                             Select::make('user_id')
                                 ->label(new HtmlString('<span class="text-gray-400">Professeur</span>'))
+                                ->placeholder('Sélectionnez un professeur')
                                 ->searchable()
                                 ->relationship('users')
                                 ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->firstname} {$record->lastname}")
