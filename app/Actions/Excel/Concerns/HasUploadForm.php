@@ -103,7 +103,7 @@ trait HasUploadForm
                     return __('Excel Data');
                 }
 
-                return str($livewire->getTable()->getPluralModelLabel())->title() . ' ' . __('Excel Data');
+                return str($livewire->getTable()->getPluralModelLabel())->title() . ' ' . __('Excel');
             })
             ->default(1)
             ->storeFiles($this->storeFiles)
@@ -112,7 +112,10 @@ trait HasUploadForm
             ->visibility($this->visibility)
             ->rules($this->validationRules())
             ->columns()
-            ->required();
+            ->required()
+            ->validationMessages([
+                'required' => 'L\'ajout d\'un fichier Excel (.xlsx) est requis',
+            ]);
     }
 
     public function validationRules(): array

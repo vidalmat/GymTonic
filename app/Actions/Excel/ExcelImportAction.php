@@ -12,6 +12,7 @@ use App\Actions\Excel\Concerns\HasUploadForm;
 use App\Actions\Excel\Concerns\HasFormActionHooks;
 use App\Actions\Excel\Concerns\CanCustomiseActionSetup;
 use App\Actions\Excel\Concerns\HasCustomCollectionMethod;
+use Filament\Notifications\Notification;
 
 class ExcelImportAction extends Action
 {
@@ -63,7 +64,7 @@ class ExcelImportAction extends Action
             ->modalHeading(fn ($livewire) => __('Import Excel'))
             ->modalDescription(__('Importer des données dans la base de données à partir d\'un fichier Excel'))
             ->modalFooterActionsAlignment('right')
-            ->closeModalByClickingAway(false)
+            // ->closeModalByClickingAway(false)
             ->action('importData');
     }
 
@@ -97,46 +98,55 @@ class ExcelImportAction extends Action
     }
 
     public function processCollectionUsing(Closure $closure): static
-{
-    $this->collectionMethod = function (string $modelClass, \Illuminate\Support\Collection $collection) use ($closure) {
-        $processedCollection = $closure($modelClass, $collection);
+    {
+        try {
+            $this->collectionMethod = function (string $modelClass, \Illuminate\Support\Collection $collection) use ($closure) {
+                $processedCollection = $closure($modelClass, $collection);
 
-        foreach ($processedCollection as $row) {
+                foreach ($processedCollection as $row) {
 
-            $member = Member::updateOrCreate(
-                [
-                    'email' => $row['email'],
-                    'lastname' => $row['lastname'],
-                    'firstname' => $row['firstname'],
-                ]
-            );
+                    $member = Member::updateOrCreate(
+                        [
+                            'email' => $row['email'],
+                            'lastname' => $row['lastname'],
+                            'firstname' => $row['firstname'],
+                        ]
+                    );
 
-            $documentIds = [];
+                    $documentIds = [];
 
-            if (!empty($row['certificat_medical'])) {
-                $documentIds[] = Document::firstOrCreate(['label' => 'Certificat médical'])->id;
-            }
-            if (!empty($row['documents_partenaires'])) {
-                $documentIds[] = Document::firstOrCreate(['label' => 'Documents partenaires'])->id;
-            }
-            if (!empty($row['fiche_dinscription'])) {
-                $documentIds[] = Document::firstOrCreate(['label' => 'Fiche d\'inscription'])->id;
-            }
-            if (!empty($row['lettre_daccompagnement'])) {
-                $documentIds[] = Document::firstOrCreate(['label' => 'Lettre d\'accompagnement'])->id;
-            }
-            if (!empty($row['charte_de_ladherent'])) {
-                $documentIds[] = Document::firstOrCreate(['label' => 'Charte de l\'adhérent'])->id;
-            }
+                    if (!empty($row['certificat_medical'])) {
+                        $documentIds[] = Document::firstOrCreate(['label' => 'Certificat médical'])->id;
+                    }
+                    if (!empty($row['documents_partenaires'])) {
+                        $documentIds[] = Document::firstOrCreate(['label' => 'Documents partenaires'])->id;
+                    }
+                    if (!empty($row['fiche_dinscription'])) {
+                        $documentIds[] = Document::firstOrCreate(['label' => 'Fiche d\'inscription'])->id;
+                    }
+                    if (!empty($row['lettre_daccompagnement'])) {
+                        $documentIds[] = Document::firstOrCreate(['label' => 'Lettre d\'accompagnement'])->id;
+                    }
+                    if (!empty($row['charte_de_ladherent'])) {
+                        $documentIds[] = Document::firstOrCreate(['label' => 'Charte de l\'adhérent'])->id;
+                    }
 
-            $member->documents()->sync($documentIds);
+                    $member->documents()->sync($documentIds);
 
-            // $member->documents()->syncWithoutDetaching($documentIds);
+                    // $member->documents()->syncWithoutDetaching($documentIds);
+                }
+
+                return $processedCollection;
+            };
+
+            return $this;
+        } catch (\Throwable $e) {
+            report($e);
+            Notification::make()
+                ->title('L\'import du fichier Excel a échoué.')
+                ->danger()
+                ->send()
+                ->sendToDatabase(auth()->user());
         }
-
-        return $processedCollection;
-    };
-
-    return $this;
-}
+    }
 }
