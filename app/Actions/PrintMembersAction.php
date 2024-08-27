@@ -16,6 +16,7 @@ class PrintMembersAction extends Action
             ->icon('heroicon-o-printer')
             ->color('info')
             ->requiresConfirmation()
+            ->modalAlignment('center')
             ->modalHeading('Imprimer')
             ->modalDescription('Voulez-vous imprimer la liste des membres en PDF ?')
             ->icon('heroicon-o-printer')

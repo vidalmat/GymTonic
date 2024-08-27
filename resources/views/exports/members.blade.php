@@ -44,8 +44,8 @@
                 <tr>
                     <th>Nom</th>
                     <th>Email</th>
-                    <th>Date de Création</th>
-                    <th>Documents Manquants</th>
+                    <th>Date de création</th>
+                    <th>Documents manquants</th>
                 </tr>
             </thead>
             <tbody>
