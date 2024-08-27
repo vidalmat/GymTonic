@@ -38,7 +38,7 @@ class LessonResource extends Resource
 
     protected static string $relationship = 'users';
 
-    protected static ?string $recordTitleAttribute = 'code';
+    protected static ?string $recordTitleAttribute = 'label';
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 

@@ -39,7 +39,10 @@ class MemberResource extends Resource
 
     protected static string $relationship = 'documents';
 
-    protected static ?string $recordTitleAttribute = 'code';
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['lastname', 'firstname', 'email'];
+    }
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 

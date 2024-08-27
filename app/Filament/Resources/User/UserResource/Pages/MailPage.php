@@ -24,8 +24,6 @@ class MailPage extends Page
 
     public static ?string $slug = 'emails';
 
-    protected static ?string $recordTitleAttribute = 'code';
-
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 
     // public function getActions(): array

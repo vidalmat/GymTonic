@@ -37,7 +37,10 @@ class UserResource extends Resource
 
     public static ?string $slug = 'administrateurs';
 
-    protected static ?string $recordTitleAttribute = 'code';
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['lastname', 'firstname', 'email'];
+    }
 
     protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
 

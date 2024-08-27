@@ -16,13 +16,11 @@ class ListMembers extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        // Initialisez les actions de base
         $actions = [
             CreateAction::make(),
             PrintMembersAction::make()
         ];
 
-        // Ajoutez l'action PrintMembersAction si l'utilisateur est un super administrateur
         if (Auth::user()->isSuperAdmin()) {
             $actions[] = ExcelImportAction::make()
                 ->processCollectionUsing(function (string $modelClass, \Illuminate\Support\Collection $collection) {

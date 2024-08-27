@@ -45,7 +45,10 @@ class MailResource extends Resource
 
     protected static string $relationship = 'members';
 
-    protected static ?string $recordTitleAttribute = 'code';
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['subject', 'message'];
+    }
 
     public static function form(Form $form): Form
     {

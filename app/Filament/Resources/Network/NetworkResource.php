@@ -36,6 +36,8 @@ class NetworkResource extends Resource
 
     public static ?string $slug = 'medias';
 
+    protected static ?string $recordTitleAttribute = 'label';
+
     public static function form(Form $form): Form
     {
         return $form
