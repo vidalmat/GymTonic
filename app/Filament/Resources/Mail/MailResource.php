@@ -204,7 +204,7 @@ class MailResource extends Resource
                                 'user_id' => Auth::user()->id,
                                 'title' => $e->getMessage(),
                                 'code' => $e->getCode(),
-                                'stack_trace' => $e->getTraceAsString(),
+                                // 'stack_trace' => $e->getTraceAsString(),
                             ]);
 
                             report($e);

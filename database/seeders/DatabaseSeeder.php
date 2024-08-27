@@ -41,15 +41,19 @@ class DatabaseSeeder extends Seeder
         //     $documentIds[] = $document->id;
         // }
 
-        foreach (range(1, 50) as $index) {
-            Member::create([
-                'id' => $faker->uuid,
-                'lastname' => addslashes($faker->lastName), // Échappement manuel si nécessaire
-                'firstname' => $faker->firstName,
-                'email' => $faker->email,
-                'updated_at' => now(),
-                'created_at' => now(),
-            ]);
-        }
+        // foreach (range(1, 50) as $index) {
+        //     Member::create([
+        //         'id' => $faker->uuid,
+        //         'lastname' => addslashes($faker->lastName), // Échappement manuel si nécessaire
+        //         'firstname' => $faker->firstName,
+        //         'email' => $faker->email,
+        //         'updated_at' => now(),
+        //         'created_at' => now(),
+        //     ]);
+        // }
+
+        $this->call([
+            EventsSeeder::class,
+        ]);
     }
 }
