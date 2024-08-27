@@ -65,6 +65,9 @@ class ExcelImportAction extends Action
             ->modalDescription(__('Importer des données dans la base de données à partir d\'un fichier Excel'))
             ->modalFooterActionsAlignment('right')
             // ->closeModalByClickingAway(false)
+            ->extraAttributes([
+                'title' => 'Ajouter des membres avec fichier Excel',
+            ])
             ->action('importData');
     }
 

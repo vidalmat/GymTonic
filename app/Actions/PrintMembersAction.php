@@ -19,6 +19,9 @@ class PrintMembersAction extends Action
             ->modalHeading('Imprimer')
             ->modalDescription('Voulez-vous imprimer la liste des membres en PDF ?')
             ->icon('heroicon-o-printer')
+            ->extraAttributes([
+                'title' => 'Imprimer la liste des membres',
+            ])
             ->action(function () {
 
                 $members = Member::with('documents')->get();

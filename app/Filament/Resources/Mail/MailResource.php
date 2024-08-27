@@ -91,6 +91,40 @@ class MailResource extends Resource
             ->striped()
             ->columns([
 
+                TextColumn::make('send_to')
+                ->label(new HtmlString('<span class="text-gray-400">Envoyé à</span>'))
+                ->limit(20)
+                ->getStateUsing(function ($record) {
+
+                    if ($record->send_to === 'specific') {
+                        $members = $record->members;
+
+                        if ($members && $members->isNotEmpty()) {
+                            $memberNames = $members->map(function ($member) {
+                                return $member->firstname . ' ' . $member->lastname;
+                            })->implode(', ');
+
+                            return $memberNames;
+                        }
+                        return 'Aucun destinataire trouvé';
+                    }
+
+                    if ($record->send_to === 'all') {
+                        return 'Tout le monde';
+                    }
+
+                    return $record->send_to;
+                })
+                ->tooltip(function (TextColumn $column): ?string {
+                    $state = $column->getState();
+
+                    if (strlen($state) > $column->getCharacterLimit()) {
+                        return strip_tags(html_entity_decode($state));
+                    }
+
+                    return null;
+                }),
+
                 TextColumn::make('subject')
                 ->label(new HtmlString('<span class="text-gray-400">Sujet</span>'))
                 ->limit(10)
